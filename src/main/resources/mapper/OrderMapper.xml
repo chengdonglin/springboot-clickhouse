@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.geewise.bigdata.mapper.OrderMapper">
+    <sql id="baseSql">
+        SELECT id as id,sku_id as skuId, total_amount as totalAmount,create_time as createTime
+    </sql>
+
+    <!--map-underscore-to-camel-case 大写转下划线, 所以column的配置需要写成驼峰 result property="totalAmount" column="totalAmount"-->
+    <resultMap id="baseResult" type="com.geewise.bigdata.entity.Order">
+        <id property="id" column="id" />
+        <result property="skuId" column="skuId" />
+        <result property="totalAmount" column="totalAmount" />
+        <result property="createTime" column="createTime" />
+    </resultMap>
+    <select id="selectTotalAmountSkuId" parameterType="String" resultType="java.math.BigDecimal">
+      SELECT SUM(total_amount) as sum_amount FROM `order` WHERE sku_id=#{skuId}
+    </select>
+
+    <select id="selectOrder" parameterType="Integer" resultMap="baseResult">
+      <include refid="baseSql"></include>
+        FROM `order` WHERE id = #{Id}
+    </select>
+
+</mapper>
